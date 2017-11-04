@@ -20,81 +20,48 @@ import ViewPropTypes from '../config/ViewPropTypes';
 
 const ListItem = props => {
   const {
-    onPress,
     title,
-    leftIcon,
-    rightIcon,
-    leftIconOnPress,
-    leftIconOnLongPress,
-    leftIconUnderlayColor,
-    leftIconContainerStyle,
-    avatarStyle,
-    avatarContainerStyle,
-    avatarOverlayContainerStyle,
-    underlayColor,
+    titleProps,
     subtitle,
-    subtitleStyle,
+    subtitleProps,
     containerStyle,
-    wrapperStyle,
-    titleNumberOfLines,
-    titleStyle,
-    titleContainerStyle,
-    hideChevron,
-    chevronColor,
-    roundAvatar,
     component,
-    fontFamily,
-    rightTitle,
-    rightTitleContainerStyle,
-    rightTitleStyle,
-    rightTitleNumberOfLines,
-    subtitleContainerStyle,
-    subtitleNumberOfLines,
-    badge,
-    label,
-    onLongPress,
-    switchButton,
-    onSwitch,
-    switchDisabled,
-    switchOnTintColor,
-    switchThumbTintColor,
-    switchTintColor,
-    switched,
-    textInput,
-    textInputAutoCapitalize,
-    textInputAutoCorrect,
-    textInputAutoFocus,
-    textInputEditable,
-    keyboardType,
-    textInputMaxLength,
-    textInputMultiline,
-    textInputOnChangeText,
-    textInputOnFocus,
-    textInputOnBlur,
-    textInputSelectTextOnFocus,
-    textInputReturnKeyType,
-    textInputValue,
-    textInputSecure,
-    textInputStyle,
-    textInputContainerStyle,
-    textInputPlaceholder,
-    onPressRightIcon,
-    disabled,
-    disabledStyle,
+    leftComponent,
     ...attributes
   } = props;
+  // if (titleProps) {
+  //   const {
+  //     style: titleStyle,
+  //     ...titleProps,
+  //   } = titleProps;
+  // }
+  const { onPress, onLongPress } = props;
+  let Component = component ? Component : onPress || onLongPress ? TouchableOpacity : View;
 
-  let { avatar } = props;
-
-  let Component = onPress || onLongPress ? TouchableHighlight : View;
-  let LeftIconWrapper =
-    leftIconOnPress || leftIconOnLongPress ? TouchableHighlight : View;
-  if (component) {
-    Component = component;
-  }
-  if (typeof avatar === 'string') {
-    avatar = { uri: avatar };
-  }
+  return (
+    <Component {...attributes} onPress={onPress}>
+      <View style={[styles.container, containerStyle]}>
+        {React.isValidElement(leftComponent) && leftComponent}
+        <View style={styles.centerContainer}>
+          {title &&
+            <Text
+              {...titleProps}
+              style={[styles.title, titleProps && titleProps.style]}
+            >
+              {title}
+            </Text>}
+          {subtitle &&
+            <Text
+              {...subtitleProps}
+              style={[styles.subtitle, subtitleProps && subtitleProps.style]}
+            >
+              {subtitle}
+            </Text>
+          }
+        </View>
+      </View>
+    </Component>
+  );
   return (
     <Component
       onLongPress={onLongPress}
@@ -273,6 +240,26 @@ const ListItem = props => {
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    flexDirection: 'row', 
+    alignItems: 'center',   
+  },
+  title: {
+    paddingBottom: 2,
+    fontSize: 13,
+  },
+  subtitle: {
+    color: 'rgba(0, 0, 0, 0.54)',
+    fontSize: 13,    
+  },
+  centerContainer: {
+    justifyContent: 'center',
+    paddingLeft: 16,
+  },
+});
+
 ListItem.defaultProps = {
   underlayColor: 'white',
   leftIconUnderlayColor: 'white',
@@ -289,173 +276,181 @@ ListItem.defaultProps = {
 };
 
 ListItem.propTypes = {
-  title: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-    PropTypes.object,
-  ]),
-  avatar: PropTypes.any,
-  icon: PropTypes.any,
+  containerStyle: ViewPropTypes.style,
+  component: PropTypes.element,
   onPress: PropTypes.func,
-  rightIcon: PropTypes.oneOfType([PropTypes.element, PropTypes.object]),
-  underlayColor: PropTypes.string,
-  subtitle: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-    PropTypes.object,
-  ]),
-  subtitleStyle: PropTypes.any,
-  subtitleNumberOfLines: PropTypes.number,
-  containerStyle: PropTypes.any,
-  wrapperStyle: PropTypes.any,
-  titleStyle: PropTypes.any,
-  titleContainerStyle: PropTypes.any,
-  titleNumberOfLines: PropTypes.number,
-  hideChevron: PropTypes.bool,
-  chevronColor: PropTypes.string,
-  roundAvatar: PropTypes.bool,
-  badge: PropTypes.any,
-  switchButton: PropTypes.bool,
-  onSwitch: PropTypes.func,
-  switchDisabled: PropTypes.bool,
-  switchOnTintColor: PropTypes.string,
-  switchThumbTintColor: PropTypes.string,
-  switchTintColor: PropTypes.string,
-  switched: PropTypes.bool,
-  textInput: PropTypes.bool,
-  textInputAutoCapitalize: PropTypes.oneOf([
-    'none',
-    'sentences',
-    'words',
-    'characters',
-  ]),
-  textInputAutoCorrect: PropTypes.bool,
-  textInputAutoFocus: PropTypes.bool,
-  textInputEditable: PropTypes.bool,
-  keyboardType: PropTypes.oneOf([
-    'default',
-    'email-address',
-    'numeric',
-    'phone-pad',
-    'ascii-capable',
-    'numbers-and-punctuation',
-    'url',
-    'number-pad',
-    'name-phone-pad',
-    'decimal-pad',
-    'twitter',
-    'web-search',
-  ]),
-  textInputMaxLength: PropTypes.number,
-  textInputMultiline: PropTypes.bool,
-  textInputOnChangeText: PropTypes.func,
-  textInputOnFocus: PropTypes.func,
-  textInputOnBlur: PropTypes.func,
-  textInputSelectTextOnFocus: PropTypes.bool,
-  textInputReturnKeyType: PropTypes.string,
-  textInputValue: PropTypes.string,
-  textInputSecure: PropTypes.bool,
-  textInputStyle: PropTypes.any,
-  textInputContainerStyle: PropTypes.any,
-  textInputPlaceholder: PropTypes.string,
-  component: PropTypes.any,
-  fontFamily: PropTypes.string,
-  rightTitle: PropTypes.string,
-  rightTitleContainerStyle: ViewPropTypes.style,
-  rightTitleStyle: Text.propTypes.style,
-  rightTitleNumberOfLines: PropTypes.number,
-  subtitleContainerStyle: ViewPropTypes.style,
-  label: PropTypes.any,
-  onLongPress: PropTypes.func,
-  leftIcon: PropTypes.oneOfType([PropTypes.element, PropTypes.object]),
-  leftIconOnPress: PropTypes.func,
-  leftIconOnLongPress: PropTypes.func,
-  leftIconUnderlayColor: PropTypes.string,
-  leftIconContainerStyle: ViewPropTypes.style,
-  avatarStyle: ViewPropTypes.style,
-  avatarContainerStyle: ViewPropTypes.style,
-  avatarOverlayContainerStyle: ViewPropTypes.style,
-  onPressRightIcon: PropTypes.func,
-  disabled: PropTypes.bool,
-  disabledStyle: ViewPropTypes.style,
-};
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+}
 
-const styles = StyleSheet.create({
-  avatar: {
-    width: 34,
-    height: 34,
-  },
-  container: {
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    borderBottomColor: colors.greyOutline,
-    borderBottomWidth: 1,
-    backgroundColor: 'transparent',
-  },
-  wrapper: {
-    flexDirection: 'row',
-    marginLeft: 10,
-  },
-  iconStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    marginRight: 8,
-  },
-  title: {
-    fontSize: normalize(14),
-    color: colors.grey1,
-  },
-  subtitle: {
-    color: colors.grey3,
-    fontSize: normalize(12),
-    marginTop: 1,
-    ...Platform.select({
-      ios: {
-        fontWeight: '600',
-      },
-      android: {
-        ...fonts.android.bold,
-      },
-    }),
-  },
-  titleSubtitleContainer: {
-    justifyContent: 'center',
-    flex: 1,
-  },
-  chevronContainer: {
-    flex: 0.15,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  switchContainer: {
-    flex: 0.15,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    marginRight: 5,
-  },
-  rightTitleContainer: {
-    flex: 1,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  rightTitleStyle: {
-    marginRight: 5,
-    color: colors.grey4,
-  },
-  textInputContainerStyle: {
-    alignItems: null,
-  },
-  textInputStyle: {
-    height: 20,
-    flex: 1,
-    textAlign: 'right',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-});
+// ListItem.propTypes = {
+//   title: PropTypes.oneOfType([
+//     PropTypes.string,
+//     PropTypes.number,
+//     PropTypes.object,
+//   ]),
+//   avatar: PropTypes.any,
+//   icon: PropTypes.any,
+//   onPress: PropTypes.func,
+//   rightIcon: PropTypes.oneOfType([PropTypes.element, PropTypes.object]),
+//   underlayColor: PropTypes.string,
+//   subtitle: PropTypes.oneOfType([
+//     PropTypes.string,
+//     PropTypes.number,
+//     PropTypes.object,
+//   ]),
+//   subtitleStyle: PropTypes.any,
+//   subtitleNumberOfLines: PropTypes.number,
+//   containerStyle: PropTypes.any,
+//   wrapperStyle: PropTypes.any,
+//   titleStyle: PropTypes.any,
+//   titleContainerStyle: PropTypes.any,
+//   titleNumberOfLines: PropTypes.number,
+//   hideChevron: PropTypes.bool,
+//   chevronColor: PropTypes.string,
+//   roundAvatar: PropTypes.bool,
+//   badge: PropTypes.any,
+//   switchButton: PropTypes.bool,
+//   onSwitch: PropTypes.func,
+//   switchDisabled: PropTypes.bool,
+//   switchOnTintColor: PropTypes.string,
+//   switchThumbTintColor: PropTypes.string,
+//   switchTintColor: PropTypes.string,
+//   switched: PropTypes.bool,
+//   textInput: PropTypes.bool,
+//   textInputAutoCapitalize: PropTypes.oneOf([
+//     'none',
+//     'sentences',
+//     'words',
+//     'characters',
+//   ]),
+//   textInputAutoCorrect: PropTypes.bool,
+//   textInputAutoFocus: PropTypes.bool,
+//   textInputEditable: PropTypes.bool,
+//   keyboardType: PropTypes.oneOf([
+//     'default',
+//     'email-address',
+//     'numeric',
+//     'phone-pad',
+//     'ascii-capable',
+//     'numbers-and-punctuation',
+//     'url',
+//     'number-pad',
+//     'name-phone-pad',
+//     'decimal-pad',
+//     'twitter',
+//     'web-search',
+//   ]),
+//   textInputMaxLength: PropTypes.number,
+//   textInputMultiline: PropTypes.bool,
+//   textInputOnChangeText: PropTypes.func,
+//   textInputOnFocus: PropTypes.func,
+//   textInputOnBlur: PropTypes.func,
+//   textInputSelectTextOnFocus: PropTypes.bool,
+//   textInputReturnKeyType: PropTypes.string,
+//   textInputValue: PropTypes.string,
+//   textInputSecure: PropTypes.bool,
+//   textInputStyle: PropTypes.any,
+//   textInputContainerStyle: PropTypes.any,
+//   textInputPlaceholder: PropTypes.string,
+//   component: PropTypes.any,
+//   fontFamily: PropTypes.string,
+//   rightTitle: PropTypes.string,
+//   rightTitleContainerStyle: ViewPropTypes.style,
+//   rightTitleStyle: Text.propTypes.style,
+//   rightTitleNumberOfLines: PropTypes.number,
+//   subtitleContainerStyle: ViewPropTypes.style,
+//   label: PropTypes.any,
+//   onLongPress: PropTypes.func,
+//   leftIcon: PropTypes.oneOfType([PropTypes.element, PropTypes.object]),
+//   leftIconOnPress: PropTypes.func,
+//   leftIconOnLongPress: PropTypes.func,
+//   leftIconUnderlayColor: PropTypes.string,
+//   leftIconContainerStyle: ViewPropTypes.style,
+//   avatarStyle: ViewPropTypes.style,
+//   avatarContainerStyle: ViewPropTypes.style,
+//   avatarOverlayContainerStyle: ViewPropTypes.style,
+//   onPressRightIcon: PropTypes.func,
+//   disabled: PropTypes.bool,
+//   disabledStyle: ViewPropTypes.style,
+// };
+
+// const styles = StyleSheet.create({
+//   avatar: {
+//     width: 34,
+//     height: 34,
+//   },
+//   container: {
+//     paddingTop: 10,
+//     paddingRight: 10,
+//     paddingBottom: 10,
+//     borderBottomColor: colors.greyOutline,
+//     borderBottomWidth: 1,
+//     backgroundColor: 'transparent',
+//   },
+//   wrapper: {
+//     flexDirection: 'row',
+//     marginLeft: 10,
+//   },
+//   iconStyle: {
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   icon: {
+//     marginRight: 8,
+//   },
+//   title: {
+//     fontSize: normalize(14),
+//     color: colors.grey1,
+//   },
+//   subtitle: {
+//     color: colors.grey3,
+//     fontSize: normalize(12),
+//     marginTop: 1,
+//     ...Platform.select({
+//       ios: {
+//         fontWeight: '600',
+//       },
+//       android: {
+//         ...fonts.android.bold,
+//       },
+//     }),
+//   },
+//   titleSubtitleContainer: {
+//     justifyContent: 'center',
+//     flex: 1,
+//   },
+//   chevronContainer: {
+//     flex: 0.15,
+//     alignItems: 'flex-end',
+//     justifyContent: 'center',
+//   },
+//   switchContainer: {
+//     flex: 0.15,
+//     alignItems: 'flex-end',
+//     justifyContent: 'center',
+//     marginRight: 5,
+//   },
+//   rightTitleContainer: {
+//     flex: 1,
+//     alignItems: 'flex-end',
+//     justifyContent: 'center',
+//   },
+//   rightTitleStyle: {
+//     marginRight: 5,
+//     color: colors.grey4,
+//   },
+//   textInputContainerStyle: {
+//     alignItems: null,
+//   },
+//   textInputStyle: {
+//     height: 20,
+//     flex: 1,
+//     textAlign: 'right',
+//   },
+//   disabled: {
+//     opacity: 0.5,
+//   },
+// });
 
 export default ListItem;

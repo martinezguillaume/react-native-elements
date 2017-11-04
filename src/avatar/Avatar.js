@@ -59,8 +59,8 @@ const Avatar = props => {
     width = 150;
     height = 150;
   } else if (!width && !height) {
-    width = 34;
-    height = 34;
+    width = 40;
+    height = 40;
   } else if (!width) {
     width = height;
   } else if (!height) {
